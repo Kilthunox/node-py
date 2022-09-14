@@ -2,7 +2,7 @@
 
 class Node:
     _parent = None
-    _view: list[str] = []
+    _view: list = []
     _kwargs: dict = None
     _index: int = 0
 
