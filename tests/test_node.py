@@ -18,7 +18,7 @@ class TestNode:
         class ExtendedNode(Node):
             def build(self):
                 from math import pi
-                self.iniattr("pi", pi)
+                self.initattr("pi", pi)
                 self.initattr("pi2", pi**2)
                 super().build()
 
