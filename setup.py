@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.1.1'
+VERSION = '0.1.2'
 DESCRIPTION = ''
 with open('README.md') as readme:
     LONG_DESCRIPTION = readme.read()
@@ -16,7 +16,6 @@ setup(
     packages=find_packages(),
     install_requires=[
     ],
-    keywords=['python', 'websockets', 'server'],
     classifiers=[
         'Programming Language :: Python :: 3',
     ]
