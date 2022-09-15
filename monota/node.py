@@ -156,9 +156,8 @@ class Node:
             index = len(self.get_view())
         child.set_parent(self)
         self[child._name] = child
-        self.view.insert(index, child._name)
-        for setup_method in ("startup", "build", "fit"):
-            child[setup_method]()
+        self._view.insert(index, child._name)
+        child.build()
         self.sort_view()
 
     def clear_children(self, key=lambda node: True):
