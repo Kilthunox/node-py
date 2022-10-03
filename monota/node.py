@@ -24,6 +24,7 @@ class Node:
             setattr(self, attr, value)
         for node in children:
             self.add_child(node)
+        return self
 
     def __iter__(self):
         for node_name in self.get_view():
@@ -120,6 +121,9 @@ class Node:
             setattr(self, attr, value)
         elif self[attr] is None:
             setattr(self, attr, value)
+
+    def resetattr(self, attr: str):
+        setattr(self, attr, self._kwargs.get(attr))
 
     def setattr(self, attr: str, value: any):
         setattr(self, attr, value)
