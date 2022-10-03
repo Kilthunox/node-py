@@ -136,6 +136,12 @@ class Node:
         for child in self:
             child.cascade(*signals)
 
+    def get_name(self) -> str:
+        return self._name
+
+    def set_name(self, value: str):
+        self._name = value
+
     def set_parent(self, node):
         self._parent = node
 

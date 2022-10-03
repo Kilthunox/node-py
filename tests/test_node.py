@@ -1,6 +1,6 @@
 import pytest
 
-from ..src import Node
+from ..monota import Node
 
 
 @pytest.mark.node
@@ -23,6 +23,9 @@ class TestNode:
                 super().build()
 
             def run(self):
+                self(
+                    self.get_name(),
+                )
                 pass
                 super().run()
 
