@@ -34,3 +34,9 @@ class TestNode:
         )
         app.build()
         app.run()
+
+    def test_add_child_node(self):
+        app = Node("parent")
+        app("parent", Node("child"))
+        app.build()
+        app.run()

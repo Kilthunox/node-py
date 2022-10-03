@@ -16,7 +16,6 @@ setup(
     packages=find_packages(),
     install_requires=[
     ],
-    keywords=['python', 'websockets', 'server'],
     classifiers=[
         'Programming Language :: Python :: 3',
     ]
