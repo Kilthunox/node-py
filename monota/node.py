@@ -162,6 +162,9 @@ class Node:
     def set_kwargs(self, value: dict):
         self._kwargs = value
 
+    def update_kwargs(self, value: dict):
+        self._kwargs.update(value)
+
     def set_parent(self, node):
         self._parent = node
 
