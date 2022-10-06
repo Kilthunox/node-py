@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '1.1.2'
+VERSION = '1.1.3'
 DESCRIPTION = ''
 with open('README.md') as readme:
     LONG_DESCRIPTION = readme.read()
@@ -13,7 +13,7 @@ setup(
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
-    packages=find_packages("monota", exclude=["tests"]),
+    packages=find_packages(exclude=["tests"]),
     install_requires=[
     ],
     classifiers=[
