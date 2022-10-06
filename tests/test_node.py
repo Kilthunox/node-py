@@ -37,7 +37,8 @@ class TestNode:
 
     def test_add_child_node(self):
         app = Node("parent")
-        app(Node("child"))
         app("rename_test_2", Node("child"))
+        app["child/destruct"]()
+        assert "child" not in app.get_view()
         app.build()
         app.run()

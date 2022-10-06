@@ -1,6 +1,8 @@
 
 
 class Node:
+    _parent = None
+
     def __init__(self, name: str, *children: list, **kwargs: dict):
         self.set_name(name)
         self.set_index(kwargs.get("index", 0))
@@ -192,7 +194,8 @@ class Node:
                 self.remove_from_view(node.get_name())
 
     def remove_child(self, child_name):
-        self.remove(child_name)
+        if child_name in self.get_view():
+            self.remove_from_view(child_name)
         delattr(self, child_name)
 
     def get_parent(self):
@@ -229,14 +232,18 @@ class Node:
     def append_in_view(self, node_name: str):
         self._view.append(node_name)
 
-    def insert_in_view(index, node_name: str):
+    def insert_in_view(self, index, node_name: str):
         self._view.insert(index, node_name)
 
-    def remove_from_view(node_name: str):
+    def remove_from_view(self, node_name: str):
         self._view.remove(node_name)
 
     def get_view(self) -> list:
         return self._view
+
+    def destruct(self):
+        if self.get_parent():
+            self["../remove_child"](self.get_name())
 
     def build(self):
         for node in self:
@@ -245,4 +252,3 @@ class Node:
     def run(self):
         for node in self:
             node.run()
-
