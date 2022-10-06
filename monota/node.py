@@ -6,10 +6,18 @@ class Node:
     _kwargs: dict = None
     _index: int = 0
 
-    def __init__(self, name, *children: list, **kwargs: dict):
-        self._name = name
-        self._kwargs = kwargs
-        self._view = [node._name for node in children]
+    @staticmethod
+    def _parse_first_arg(args):
+        arg = next(iter(args), None)
+        if isinstance(arg, str):
+            return True, arg
+        return False, arg
+
+
+    def __init__(self, name: str, *children: list, **kwargs: dict):
+        self.set_name(name)
+        self.set_kwargs(kwargs)
+        self.set_view([node._name for node in children])
         for attr, value in kwargs.items():
             setattr(self, attr, value)
 
@@ -17,12 +25,14 @@ class Node:
             node._parent = self
             setattr(self, node._name, node)
 
-    def __call__(self, name: str, *children, **kwargs):
-        self._name = name
+    def __call__(self, *args, **kwargs):
+        index, arg = Node._parse_first_arg(args)
+        if index:
+            self.set_name(arg)
         self._kwargs.update(kwargs)
         for attr, value in kwargs.items():
             setattr(self, attr, value)
-        for node in children:
+        for node in args[index:]:
             self.add_child(node)
         return self
 
@@ -145,6 +155,12 @@ class Node:
 
     def set_name(self, value: str):
         self._name = value
+
+    def get_kwargs(self) -> dict:
+        return self._kwargs
+
+    def set_kwargs(self, value: dict):
+        self._kwargs = value
 
     def set_parent(self, node):
         self._parent = node

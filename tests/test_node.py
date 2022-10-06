@@ -37,6 +37,7 @@ class TestNode:
 
     def test_add_child_node(self):
         app = Node("parent")
-        app("parent", Node("child"))
+        app(Node("child"))
+        app("rename_test_2", Node("child"))
         app.build()
         app.run()
