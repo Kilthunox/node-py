@@ -1,35 +1,23 @@
 
 
 class Node:
-    _parent = None
-    _view: list = []
-    _kwargs: dict = None
-    _index: int = 0
-
-    @staticmethod
-    def _parse_first_arg(args):
-        arg = next(iter(args), None)
-        if isinstance(arg, str):
-            return True, arg
-        return False, arg
-
-
     def __init__(self, name: str, *children: list, **kwargs: dict):
         self.set_name(name)
+        self.set_index(kwargs.get("index", 0))
         self.set_kwargs(kwargs)
         self.set_view([node._name for node in children])
         for attr, value in kwargs.items():
             setattr(self, attr, value)
 
         for node in children:
-            node._parent = self
-            setattr(self, node._name, node)
+            node.set_parent(self)
+            setattr(self, node.get_name(), node)
 
     def __call__(self, *args, **kwargs):
         index, arg = Node._parse_first_arg(args)
         if index:
             self.set_name(arg)
-        self._kwargs.update(kwargs)
+        self.update_kwargs(kwargs)
         for attr, value in kwargs.items():
             setattr(self, attr, value)
         for node in args[index:]:
@@ -85,6 +73,14 @@ class Node:
     def __repr__(self):
         return f"<{self.get_pointer()}>"
 
+    @staticmethod
+    def _parse_first_arg(args):
+        arg = next(iter(args), None)
+        if isinstance(arg, str):
+            return True, arg
+        return False, arg
+
+
     def show(self):
         if self.get_parent():
             if self._name not in self.get_parent().get_view():
@@ -133,7 +129,7 @@ class Node:
             setattr(self, attr, value)
 
     def resetattr(self, attr: str):
-        setattr(self, attr, self._kwargs.get(attr))
+        setattr(self, attr, self.get_kwargs().get(attr))
 
     def setattr(self, attr: str, value: any):
         setattr(self, attr, value)
@@ -169,7 +165,7 @@ class Node:
         self._parent = node
 
     def sort_view(self):
-        self.set_view([node._name for node in sorted(self.get_children(), key=lambda node: node._index)])
+        self.set_view([node.get_name() for node in sorted(self.get_children(), key=lambda node: node._index)])
 
     def set_index(self, value: int):
         self._index = value
@@ -184,19 +180,19 @@ class Node:
         if index is None:
             index = len(self.get_view())
         child.set_parent(self)
-        self[child._name] = child
-        self._view.insert(index, child._name)
+        self[child.get_name()] = child
+        self._view.insert(index, child.get_name())
         child.build()
         self.sort_view()
 
     def clear_children(self, key=lambda node: True):
         for node in list(filter(key, self)):
-            delattr(self, node._name)
-            if node._name in self.get_view():
-                self._view.remove(node._name)
+            delattr(self, node.get_name())
+            if node.get_name() in self.get_view():
+                self.remove_from_view(node.get_name())
 
     def remove_child(self, child_name):
-        self._view.remove(child_name)
+        self.remove(child_name)
         delattr(self, child_name)
 
     def get_parent(self):
@@ -221,14 +217,23 @@ class Node:
         pointer_string = ""
         while next_node:
             if next_node.get_parent():
-                pointer_string = f"/{next_node._name}{pointer_string}"
+                pointer_string = f"/{next_node.get_name()}{pointer_string}"
             next_node = next_node.get_parent()
-        pointer_string += f"/{self._name}"
+        pointer_string += f"/{self.get_name()}"
 
         return pointer_string
 
     def set_view(self, new_view: list):
         self._view = new_view
+
+    def append_in_view(self, node_name: str):
+        self._view.append(node_name)
+
+    def insert_in_view(index, node_name: str):
+        self._view.insert(index, node_name)
+
+    def remove_from_view(node_name: str):
+        self._view.remove(node_name)
 
     def get_view(self) -> list:
         return self._view
