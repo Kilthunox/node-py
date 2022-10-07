@@ -78,9 +78,9 @@ class Node:
     @staticmethod
     def _parse_first_arg(args):
         arg = next(iter(args), None)
-        if isinstance(arg, str):
-            return True, arg
-        return False, arg
+        if isinstance(arg, Node):
+            return False, arg
+        return True, arg
 
 
     def show(self):
@@ -184,7 +184,6 @@ class Node:
         child.set_parent(self)
         self[child.get_name()] = child
         self._view.insert(index, child.get_name())
-        child.build()
         self.sort_view()
 
     def clear_children(self, key=lambda node: True):
