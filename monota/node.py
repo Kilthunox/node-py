@@ -248,6 +248,10 @@ class Node:
         for node in self:
             node.build()
 
+    async def loop(self):
+        for node in self:
+            await node.loop()
+
     def run(self):
         for node in self:
             node.run()
