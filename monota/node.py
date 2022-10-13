@@ -72,6 +72,9 @@ class Node:
 
         attr.setattr(final_attr, value)
 
+    def __delitem__(self, pointer: str):
+        self[pointer].destruct()
+
     def __repr__(self):
         return f"<{self.get_pointer()}>"
 
