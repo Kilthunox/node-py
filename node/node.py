@@ -1,11 +1,15 @@
 
 
+
 class Node:
-    _parent = None
+   _parent = None
+
+    class PointerError(AttributeError):
+        pass
 
     def __init__(self, name: str, *children: list, **kwargs: dict):
         self.set_name(name)
-        self.set_index(kwargs.get("index", 0))
+        self.set_index(kwargs.get('index', 0))
         self.set_kwargs(kwargs)
         self.set_view([node._name for node in children])
         for attr, value in kwargs.items():
@@ -34,16 +38,16 @@ class Node:
         if pointer is None:
             return
 
-        if pointer[0] == "/":
+        if pointer[0] == '/':
             attr = self.get_root()
             pointer = pointer[1:]
         else:
             attr = self
 
-        for attr_name in pointer.split("/"):
-            if not attr_name or attr_name == ".":
+        for attr_name in pointer.split('/'):
+            if not attr_name or attr_name == '.':
                 continue
-            elif attr_name == "..":
+            elif attr_name == '..':
                 attr = attr.get_parent()
             else:
                 attr = attr.getattr(attr_name)
@@ -53,19 +57,19 @@ class Node:
         if pointer is None:
             return
 
-        if pointer[0] == "/":
+        if pointer[0] == '/':
             attr = self.get_root()
             pointer = pointer[1:]
         else:
             attr = self
 
-        pointer_split = pointer.split("/")
+        pointer_split = pointer.split('/')
         final_attr = pointer_split[-1]
 
         for attr_name in pointer_split[:-1]:
-            if not attr_name or attr_name == ".":
+            if not attr_name or attr_name == '.':
                 continue
-            elif attr_name == "..":
+            elif attr_name == '..':
                 attr = attr.get_parent()
             else:
                 attr = attr.getattr(attr_name)
@@ -76,7 +80,28 @@ class Node:
         self[pointer].destruct()
 
     def __repr__(self):
-        return f"<{self.get_pointer()}>"
+        return f'<{self.get_pointer()}>'
+
+    def __truediv__(self, pointer: str):
+        return self[pointer]
+
+    def __floordiv__(self, pointer: str):
+        return self.get_root()[pointer]
+
+    def __add__(self, nodes: list):
+        self(*nodes)
+
+    def __sub__(self, child_name: str):
+        self.remove_child(child_name)
+
+    def __mod__(self, key: callable):
+        yield from self.get_children(key=key)
+
+    def __str__(self) -> str:
+        return self.get_pointer()
+
+    def __invert__(self) -> str:
+        return self.get_name()
 
     @staticmethod
     def _parse_first_arg(args):
@@ -84,7 +109,6 @@ class Node:
         if isinstance(arg, Node):
             return False, arg
         return True, arg
-
 
     def show(self):
         if self.get_parent():
@@ -100,16 +124,16 @@ class Node:
         if pointer is None:
             False
 
-        if pointer[0] == "/":
+        if pointer[0] == '/':
             attr = self.get_root()
             pointer = pointer[1:]
         else:
             attr = self
 
-        for attr_name in pointer.split("/"):
-            if not attr_name or attr_name == ".":
+        for attr_name in pointer.split('/'):
+            if not attr_name or attr_name == '.':
                 continue
-            elif attr_name == "..":
+            elif attr_name == '..':
                 attr = attr.get_parent()
             else:
                 if not hasattr(attr, attr_name):
@@ -127,7 +151,8 @@ class Node:
             node = node.get_parent()
         return True
 
-    def initattr(self, attr: str, value: any):
+    def initattr(self, attr: str, value: any = None):
+        self._kwargs[attr] = value
         if not hasattr(self, attr):
             setattr(self, attr, value)
         elif self[attr] is None:
@@ -143,7 +168,7 @@ class Node:
         try:
             return getattr(self, attr)
         except AttributeError:
-            raise AttributeError(f"{self.__class__.__name__}:{self.get_pointer()} has no attribute '{attr}'")
+            raise self.PointerError(f'{self.__class__.__name__}:{self.get_pointer()} has no child "{attr}"')
 
     def cascade(self, *signals):
         for signal in signals:
@@ -219,12 +244,12 @@ class Node:
 
     def get_pointer(self) -> str:
         next_node = self.get_parent()
-        pointer_string = ""
+        pointer_string = ''
         while next_node:
             if next_node.get_parent():
-                pointer_string = f"/{next_node.get_name()}{pointer_string}"
+                pointer_string = f'/{next_node.get_name()}{pointer_string}'
             next_node = next_node.get_parent()
-        pointer_string += f"/{self.get_name()}"
+        pointer_string += f'/{self.get_name()}'
 
         return pointer_string
 
@@ -245,16 +270,19 @@ class Node:
 
     def destruct(self):
         if self.get_parent():
-            self["../remove_child"](self.get_name())
+            self['../remove_child'](self.get_name())
 
-    def build(self):
-        for node in self:
-            node.build()
+    def reset(self):
+        self.__dict__.update(self.get_kwargs())
 
-    async def loop(self):
+    def __fit__(self):
         for node in self:
-            await node.loop()
+            node.__fit__()
 
-    def run(self):
+    async def __loop__(self):
         for node in self:
-            node.run()
+            await node.__loop__()
+
+    def __run__(self):
+        for node in self:
+            node.__run__()
