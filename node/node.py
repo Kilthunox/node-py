@@ -2,7 +2,7 @@
 
 
 class Node:
-   _parent = None
+    _parent = None
 
     class PointerError(AttributeError):
         pass
@@ -90,9 +90,11 @@ class Node:
 
     def __add__(self, nodes: list):
         self(*nodes)
+        return self
 
     def __sub__(self, child_name: str):
         self.remove_child(child_name)
+        return self
 
     def __mod__(self, key: callable):
         yield from self.get_children(key=key)
