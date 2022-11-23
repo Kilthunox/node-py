@@ -8,7 +8,7 @@ def main(*args, **kwargs):
     '''
     name = os.environ['IMPORT']
     path = os.environ['FROM']
-    module = __import__(path)
+    module = getattr(name, __import__(path))
     root = getattr(module, name)
     root.__fit__(*args, **kwargs)
     return root.__run__(*args, **kwargs)
