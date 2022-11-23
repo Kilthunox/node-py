@@ -7,7 +7,7 @@ with open('README.md') as readme:
 
 # Setting up
 setup(
-    name='node-tree-core',
+    name='node-core',
     version=VERSION,
     author='Kilthunox',
     description=DESCRIPTION,
