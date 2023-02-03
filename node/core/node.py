@@ -153,8 +153,8 @@ class Node:
             node = node.get_parent()
         return True
 
-    def envvar(self, attr: str, prefix:str = "", suffix: str=""):
-        envvar_name = f"{prefix.upper()}{self.get_name().upper()}{suffix.upper()}"
+    def envvar(self, attr: str, suffix: str):
+        envvar_name = f"{self.get_name().upper()}{suffix.upper()}"
         assert os.environ.get(envvar_name) is None, f"Missing environment variable {envvar_name}"
         self.initattr(attr, os.environ[envvar_name])
 
