@@ -155,7 +155,7 @@ class Node:
 
     def envvar(self, attr: str, suffix: str):
         envvar_name = f"{self.get_name().upper()}{suffix.upper()}"
-        assert os.environ.get(envvar_name) is None, f"Missing environment variable {envvar_name}"
+        assert os.environ.get(envvar_name) is not None, f"Missing environment variable {envvar_name}"
         self.initattr(attr, os.environ[envvar_name])
 
     def initattr(self, attr: str, value: any = None):
