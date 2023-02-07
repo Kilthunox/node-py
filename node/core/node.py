@@ -2,12 +2,11 @@ import os
 
 
 class Node:
-    _parent = None
-
     class PointerError(AttributeError):
         pass
 
     def __init__(self, name: str, *children: list, **kwargs: dict):
+        _parent = None
         self.set_name(name)
         self.set_index(kwargs.get('index', 0))
         self.set_kwargs(kwargs)
@@ -153,10 +152,10 @@ class Node:
             node = node.get_parent()
         return True
 
-    def envvar(self, attr: str, suffix: str):
+    def envvar(self, attr: str, suffix: str = "", default: any = None):
         envvar_name = f"{self.get_name().upper()}{suffix.upper()}"
-        assert os.environ.get(envvar_name) is not None, f"Missing environment variable {envvar_name}"
-        self.initattr(attr, os.environ[envvar_name])
+        assert os.environ.get(envvar_name, default) is not None, f"Missing environment variable {envvar_name}"
+        self.initattr(attr, os.environ.get(envvar_name, default))
 
     def initattr(self, attr: str, value: any = None):
         self._kwargs[attr] = value
