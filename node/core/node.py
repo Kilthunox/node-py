@@ -2,6 +2,8 @@ import os
 
 
 class Node:
+    _parent = None
+
     class PointerError(AttributeError):
         pass
 
